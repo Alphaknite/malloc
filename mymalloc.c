@@ -53,16 +53,20 @@ static void initializeHeap() {
 }
 
 /**
- * @brief finds a free chunk of memory that is large enough to accomadate the request
+ * @brief finds a free chunk of memory that is large enough to accommodate the request
  * @param size the size of the memory chunk to find
  * @return a pointer to the free chunk, or NULL if no chunk is found
  */
 static MetaData *findFreeChunk(size_t size) {
+    //start at the beginning of the memory
     MetaData *current = (MetaData *)memory;
+    //traverse the heap until we reach the end of memory
     while((char *)current < memory + MEMSIZE) {
+        //check if the current chunk is free and large enough to accommodate the request
         if(current->isFree && current->chunkLength >= size) {
             return current;
         }
+        //move to the next chunk
         current = (MetaData *)((char *)current + sizeof(MetaData) + current->chunkLength);
     }
     return NULL;
@@ -76,10 +80,12 @@ static MetaData *findFreeChunk(size_t size) {
 static void splitChunk(MetaData *chunk, size_t requestedSize) {
     size_t remainingSize = chunk->chunkLength - requestedSize - sizeof(MetaData);
 
+    //marks the new chunk as free and set the remaining size for this new chunk 
     MetaData *newChunk = (MetaData *)((char *)chunk + sizeof(MetaData) + requestedSize);
     newChunk->isFree = 1;
     newChunk->chunkLength = remainingSize;
 
+    //mark the requested size as allocated
     chunk->chunkLength = requestedSize;
     chunk->isFree = 0;
 }
@@ -92,10 +98,12 @@ static void splitChunk(MetaData *chunk, size_t requestedSize) {
  * @return a pointer to the allocated memory block, or NULL if the allocations fails.
  */
 void * mymalloc(size_t size, char *file, int line) {
+    //initialize the heap if not already
     if(heapInitialized == 0) {
         initializeHeap();
     }
 
+    //check for invalid size requests
     if(size <= 0) {
         fprintf(stderr, "malloc: invalid size (%s:%d)\n", file, line);
         return NULL;
@@ -106,18 +114,17 @@ void * mymalloc(size_t size, char *file, int line) {
     }
 
     size_t alignedSize = ((size + 7) & ~7); //aligns size to 8 bytes
-    printf("aligned size = %d\n", alignedSize);
     if (alignedSize > MEMSIZE) {
         fprintf(stderr, "malloc: requested size exceeds memory limit (%s:%d)\n", file, line);
         return NULL;
     }
-
+    //find a suitable free chunk in the heap that can hold the aligned size.
     MetaData *chunk = findFreeChunk(alignedSize);
     if(chunk == NULL) {
         fprintf(stderr, "malloc: no suitable chunk found (%s:%d)\n", file, line);
         return NULL;
     }
-
+    //if the chunk is larger than required, split it into allocated and free chunks
     if(chunk->chunkLength > alignedSize + sizeof(MetaData)) {
         splitChunk(chunk, alignedSize);
     } 
