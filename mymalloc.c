@@ -136,20 +136,24 @@ void * mymalloc(size_t size, char *file, int line) {
 }
 
 void myfree(void *ptr, char *file, int line) {
-    if (ptr == NULL){
+    if (ptr == NULL) {
         printf("Invalid pointer (%s:%d)\n", file, line);
         return;
     }
     
     MetaData *chunkToFree = (MetaData *)((char *)ptr - sizeof(MetaData));
 
-    if(chunkToFree->isFree == 1){
+    if(chunkToFree->isFree == 1) {
         printf("Error: Freeing deallocated memory (%s:%d)\n", file, line);
         return;
     }
     
-    if (chunkToFree->isFree == 0){
-        chunkToFree->isFree = 1;
+    chunkToFree->isFree = 1;
+
+    //Checking if next chunk is free. If free, then merge with freed chunk.
+    MetaData *after = (MetaData *)((char *)chunkToFree + sizeof(MetaData) + chunkToFree->chunkLength);
+    if (after->isFree && (char *)after < memory + MEMSIZE) {
+        chunkToFree->chunkLength = chunkToFree->chunkLength + sizeof(MetaData) + after->chunkLength;
     }
 }
 
