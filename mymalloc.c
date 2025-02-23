@@ -138,7 +138,7 @@ void * mymalloc(size_t size, char *file, int line) {
 //Checks if address is at start of a chunk
 static int isStart(MetaData *chunk){
     MetaData *curr = (MetaData *)(memory);
-    while ((char *)curr + sizeof(MetaData) <= memory + MEMSIZE) {
+    while ((char *)curr <= memory + MEMSIZE) {
         if (curr == chunk) {
             return 1;
         }
