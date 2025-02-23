@@ -135,26 +135,60 @@ void * mymalloc(size_t size, char *file, int line) {
     return (void *)((char *) chunk + sizeof(MetaData));
 }
 
+//Checks if address is at start of a chunk
+static int isStart(MetaData *chunk){
+    MetaData *curr = (MetaData *)(memory);
+    while ((char *)curr + sizeof(MetaData) <= memory + MEMSIZE) {
+        if (curr == chunk) {
+            return 1;
+        }
+        curr = (MetaData *)((char *)curr + sizeof(MetaData) + curr->chunkLength);
+    }
+    return 0;
+}
+
+static void coalesce(MetaData *chunk){
+    //Check if next chunk is free
+    MetaData *after = (MetaData *)((char *)chunk + sizeof(MetaData) + chunk->chunkLength);
+    if ((char *)after < memory + MEMSIZE && after->isFree) {
+        chunk->chunkLength = chunk->chunkLength + sizeof(MetaData) + after->chunkLength;
+        after = NULL;
+    }
+
+    //Look for previous chunk and merge if it's free
+    MetaData *before = NULL;
+    MetaData *curr = (MetaData *)(memory);
+
+    while ((char *)curr < (char *)chunk) {
+        before = curr;
+        curr = (MetaData *)((char *)curr + sizeof(MetaData) + curr->chunkLength);
+    }
+    
+    if (before != NULL && before->isFree) {
+        before->chunkLength = before->chunkLength + sizeof(MetaData) + chunk->chunkLength;
+    }
+}
+
 void myfree(void *ptr, char *file, int line) {
     if (ptr == NULL) {
-        printf("Invalid pointer (%s:%d)\n", file, line);
-        return;
+        printf("free: Inappropriate pointer(%s:%d)\n", file, line);
+        exit(2);
     }
     
     MetaData *chunkToFree = (MetaData *)((char *)ptr - sizeof(MetaData));
+    
+    if (!isStart(chunkToFree)) {
+        printf("free: Inappropriate pointer(%s:%d)\n", file, line);
+        exit(2);
+    }
 
-    if(chunkToFree->isFree == 1) {
-        printf("Error: Freeing deallocated memory (%s:%d)\n", file, line);
-        return;
+    if (chunkToFree->isFree) {
+        printf("free: Inappropriate pointer(%s:%d)\n", file, line);
+        exit(2);
     }
     
     chunkToFree->isFree = 1;
-
-    //Checking if next chunk is free. If free, then merge with freed chunk.
-    MetaData *after = (MetaData *)((char *)chunkToFree + sizeof(MetaData) + chunkToFree->chunkLength);
-    if (after->isFree && (char *)after < memory + MEMSIZE) {
-        chunkToFree->chunkLength = chunkToFree->chunkLength + sizeof(MetaData) + after->chunkLength;
-    }
+    coalesce(chunkToFree);
 }
 
 
