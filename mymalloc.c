@@ -152,7 +152,6 @@ static void coalesce(MetaData *chunk){
     MetaData *after = (MetaData *)((char *)chunk + sizeof(MetaData) + chunk->chunkLength);
     if ((char *)after < memory + MEMSIZE && after->isFree) {
         chunk->chunkLength = chunk->chunkLength + sizeof(MetaData) + after->chunkLength;
-        after = NULL;
     }
 
     //Look for previous chunk and merge if it's free
