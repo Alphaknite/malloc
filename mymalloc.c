@@ -44,7 +44,7 @@ static void initializeHeap() {
     firstChunk->isFree = 1;
     firstChunk->chunkLength = MEMSIZE;
 
-    // atexit(leakDetector); //leak detector function to be written
+    atexit(leakDetector); 
     heapInitialized = 1;
     printf("Heap Initialized: First chunk size = %d, Free = %d\n", 
             firstChunk->chunkLength, firstChunk->isFree);
@@ -192,41 +192,21 @@ void myfree(void *ptr, char *file, int line) {
 
 
 static void leakDetector() {
-   
-}
-
-//THIS IS ALL FOR TESTING, IT CAN BE REMOVED
-
-/**
-void test_allocation() {
-    printf("Running allocation tests...\n");
-
-    // void *ptr1 = mymalloc(900, __FILE__, __LINE__);
-    // void *ptr2 = mymalloc(200, __FILE__, __LINE__);
-    void *ptr = mymalloc(4096, __FILE__, __LINE__);
-    void *ptr2 = mymalloc(40, __FILE__, __LINE__);
-
-
-}
-
-void printHeap() {
     MetaData *current = (MetaData *)memory;
-    printf("Heap Visualization:\n");
-    printf("--------------------------------------------------\n");
-    printf("| %-10s | %-10s | %-10s |\n", "Address", "Size", "Status");
-    printf("--------------------------------------------------\n");
+    int allocatedCount = 0;
+    int totalAllocatedSize = 0;
 
+    //traverse the heap and count allocated chunks and their total size
     while ((char *)current < memory + MEMSIZE) {
-        printf("| %-10p | %-10d | %-10s |\n", (void *)current, current->chunkLength, current->isFree ? "Free" : "Allocated");
+        if (!current->isFree) {
+            allocatedCount++;
+            totalAllocatedSize += current->chunkLength;
+        }
         current = (MetaData *)((char *)current + sizeof(MetaData) + current->chunkLength);
     }
 
-    printf("--------------------------------------------------\n");
+    //print the number of allocated chunks and their total size
+    if (allocatedCount > 0) {
+        fprintf(stderr, "mymalloc: %d bytes leaked in %d objects.\n", totalAllocatedSize, allocatedCount);
+    }
 }
-
-int main() {
-    test_allocation();
-    printHeap();
-    return EXIT_SUCCESS;
-}
-*/
