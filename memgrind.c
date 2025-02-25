@@ -4,22 +4,20 @@
 
 #include "mymalloc.h"
 
-
-int test1() {
+void test1() {
     for(int i = 0; i < 120; i++) {
         char *ptr = malloc(1);  
         free(ptr);  
     }
 }
 
-int test2() {
+void test2() {
     char *ptrs[120]; 
 
     for(int i = 0; i < 120; i++) {
-        ptrs[i] = malloc(1);  
+        ptrs[i] = malloc(1); 
         if(ptrs[i] == NULL) {
             fprintf(stderr, "malloc failed in test2\n");
-            return EXIT_FAILURE;
         }
     }
 
@@ -28,37 +26,31 @@ int test2() {
     }
 }
 
-int test3() {
-    char *ptrs[120] = {NULL};  
-    int allocated = 0;
-    srand(time(NULL));
+void test3() {
+    char *ptrArray[120];
+    int allocated[120] = {0};  
+    int index = 0;
 
-    while(allocated < 120) {
-        if(rand() % 2 == 0 && allocated < 120) {
-            ptrs[allocated] = malloc(1);
-            if(ptrs[allocated] == NULL) {
-                fprintf(stderr, "malloc failed in test3\n");
-                return EXIT_FAILURE;
-            }
-            allocated++;
-        } else if (allocated > 0) {
-            int index = rand() % allocated;
-            if(ptrs[index] != NULL) {
-                printf("%p\n", ptrs[index]); //debug printf
-                free(ptrs[index]);
-                ptrs[index] = NULL;  
-            }
+    for(int i = 0; i < 120; i++) {
+        if(index == 0 || (rand() % 2 == 0 && index < 120)) {
+            printf("allocated index=%d\n", index);
+            ptrArray[index] = malloc(1);
+            allocated[index] = 1;
+            index++;
+        } else {
+            index--;
+            printf("free index=%d\n", index);
+            free(ptrArray[index]);
+            allocated[index] = 0;
         }
     }
 
     for(int i = 0; i < 120; i++) {
-        if(ptrs[i] != NULL) {  
-            free(ptrs[i]);
-            ptrs[i] = NULL;
+        if(allocated[i] == 1) {
+            free(ptrArray[i]);
         }
     }
 }
-
 
 int main() {
     test1();
