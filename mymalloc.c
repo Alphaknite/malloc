@@ -6,10 +6,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <assert.h>
 #include "mymalloc.h"
 
 #define MEMSIZE 4096 //define the size of memory
+#define ALIGNSIZE(size) (((size) + 7) & ~7) //macro for aligining size to 8 bytes
 
 static void initializeHeap();
 static void leakDetector();
@@ -115,7 +115,7 @@ void * mymalloc(size_t size, char *file, int line) {
         return NULL;
     }
 
-    size_t alignedSize = ((size + 7) & ~7); //aligns size to 8 bytes
+    size_t alignedSize = ALIGNSIZE(size); //aligns size to 8 bytes
 
     //make sure that the total requested size (payload + metadata) fits into our memory
     if (alignedSize + sizeof(MetaData) > MEMSIZE) {
