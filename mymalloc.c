@@ -116,16 +116,20 @@ void * mymalloc(size_t size, char *file, int line) {
     }
 
     size_t alignedSize = ((size + 7) & ~7); //aligns size to 8 bytes
-    if (alignedSize > MEMSIZE) {
+
+    //make sure that the total requested size (payload + metadata) fits into our memory
+    if (alignedSize + sizeof(MetaData) > MEMSIZE) {
         fprintf(stderr, "malloc: requested size exceeds memory limit (%s:%d)\n", file, line);
         return NULL;
     }
+
     //find a suitable free chunk in the heap that can hold the aligned size.
     MetaData *chunk = findFreeChunk(alignedSize);
     if(chunk == NULL) {
         fprintf(stderr, "malloc: no suitable chunk found (%s:%d)\n", file, line);
         return NULL;
     }
+
     //if the chunk is larger than required, split it into allocated and free chunks
     if(chunk->chunkLength > alignedSize + sizeof(MetaData)) {
         splitChunk(chunk, alignedSize);
