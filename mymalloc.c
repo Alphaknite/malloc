@@ -42,7 +42,7 @@ static void initializeHeap() {
 
     MetaData *firstChunk = (MetaData *)memory;
     firstChunk->isFree = 1;
-    firstChunk->chunkLength = MEMSIZE;
+    firstChunk->chunkLength = MEMSIZE - sizeof(MetaData);
 
     atexit(leakDetector); 
     heapInitialized = 1;
@@ -79,7 +79,9 @@ static MetaData *findFreeChunk(size_t size) {
  */
 static void splitChunk(MetaData *chunk, size_t requestedSize) {
     size_t remainingSize = chunk->chunkLength - requestedSize - sizeof(MetaData);
-
+    if (remainingSize <= sizeof(MetaData)) {
+        return;
+    }
     //marks the new chunk as free and set the remaining size for this new chunk 
     MetaData *newChunk = (MetaData *)((char *)chunk + sizeof(MetaData) + requestedSize);
     newChunk->isFree = 1;
