@@ -166,4 +166,6 @@ int main() {
     test_myfree_errors(2);
     test_myfree_errors(3);
     test_myfree_errors(4);
+
+    return EXIT_SUCCESS;
 }
