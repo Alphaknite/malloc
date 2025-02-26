@@ -126,7 +126,7 @@ void * mymalloc(size_t size, char *file, int line) {
     //find a suitable free chunk in the heap that can hold the aligned size.
     MetaData *chunk = findFreeChunk(alignedSize);
     if(chunk == NULL) {
-        fprintf(stderr, "malloc: no suitable chunk found (%s:%d)\n", file, line);
+        fprintf(stderr, "malloc: Unable to allocate %zu bytes (%s:%d)\n", alignedSize, file, line);
         return NULL;
     }
 
