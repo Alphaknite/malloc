@@ -49,14 +49,12 @@ void test3() {
 
     for(int i = 0; i < 120; i++) {
         if(index == 0 || (rand() % 2 == 0 && index < 120)) {
-            printf("allocated index=%d\n", index);
             ptrArray[index] = malloc(1);
             allocated[index] = 1;
             index++;
         }
         else {
             index--;
-            printf("free index=%d\n", index);
             free(ptrArray[index]);
             allocated[index] = 0;
         }
@@ -89,30 +87,11 @@ void test4() {
         newNode->next = head;
         head = newNode;
     }
-
-    // Print Linked List
-    printf("Linked List: ");
-    node_t *current = head;
-    while(current != NULL) {
-        printf("%c -> ", current->data);
-        current = current->next;
-    }
-    printf("NULL\n");
-
     while(head) {
         node_t *temp = head;
         head = head->next;
         free(temp);
     }
-
-    // Print Linked List
-    printf("Linked List: ");
-    node_t *curr = head;
-    while(curr != NULL) {
-        printf("%c -> ", curr->data);
-        curr = curr->next;
-    }
-    printf("NULL\n");
 }
 
 //  Test 5
@@ -166,8 +145,6 @@ void test5() {
 
     // Free tree
     freeTree(root);
-
-    printf("Tree freed\n");
 }
 
 //  Main
