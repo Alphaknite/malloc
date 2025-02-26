@@ -4,6 +4,8 @@
 
 #include "mymalloc.h"
 
+//  Test 1
+//-----------------------------------------------------------------------------
 void test1() {
     for(int i = 0; i < 120; i++) {
         char *ptr = malloc(1);
@@ -11,6 +13,8 @@ void test1() {
     }
 }
 
+//  Test 2
+//-----------------------------------------------------------------------------
 void test2() {
     char *ptrs[120];
 
@@ -26,6 +30,8 @@ void test2() {
     }
 }
 
+//  Test 3
+//-----------------------------------------------------------------------------
 void test3() {
     char *ptrArray[120];
     int allocated[120] = {0};
@@ -53,6 +59,8 @@ void test3() {
     }
 }
 
+//  Test 4
+//-----------------------------------------------------------------------------
 typedef struct node {
     char data;
     struct node *next;
@@ -94,10 +102,59 @@ void test4() {
     printf("NULL\n");
 }
 
+//  Test 5
+//-----------------------------------------------------------------------------
+typedef struct TreeNode {
+    char data;
+    struct TreeNode *left;
+    struct TreeNode *right;
+} TreeNode;
+
+TreeNode* insertNode(TreeNode *root, char data) {
+    if(root == NULL) {
+        TreeNode *newNode = (TreeNode *)malloc(sizeof(TreeNode));
+        if(newNode == NULL) {
+            fprintf(stderr, "malloc failed in insertNode\n");
+            return NULL;
+        }
+        newNode->data = data;
+        newNode->left = newNode->right = NULL;
+        return newNode;
+    }
+    if(data < root->data) root->left = insertNode(root->left, data);
+    else root->right = insertNode(root->right, data);
+    return root;
+}
+
+void freeTree(TreeNode *root) {
+    if(root) {
+        freeTree(root->left);
+        freeTree(root->right);
+        free(root);
+    }
+}
+
+void test5() {
+    TreeNode *root = NULL;
+    
+    // Insert nodes
+    for(int i = 0; i < 120; i++) {
+        root = insertNode(root, 'A' + (i % 26));
+    }
+
+    // Free tree
+    freeTree(root);
+
+    printf("Tree freed\n");
+}
+
+//  Main
+//-----------------------------------------------------------------------------
 int main() {
     test1();
     test2();
     test3();
     test4();
+    test5();
     return EXIT_SUCCESS;
 }
