@@ -151,10 +151,25 @@ void test5() {
 //  Main
 //-----------------------------------------------------------------------------
 int main() {
-    test1();
-    test2();
-    test3();
-    test4();
-    test5();
+    struct timeval start;
+    struct timeval end;
+    double elapsed;
+    double average;
+
+    gettimeofday(&start, NULL);
+
+    for(int i = 0; i < 50; i++){
+        test1();
+        test2();
+        test3();
+        test4();
+        test5();
+    }
+    
+    gettimeofday(&end, NULL);
+    elapsed = (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000000.0;
+    average = elapsed / 50;
+
+    printf("Average time per run: %f seconds\n", average);
     return EXIT_SUCCESS;
 }
