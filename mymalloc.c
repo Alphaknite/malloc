@@ -11,9 +11,6 @@
 #define MEMSIZE 4096 //define the size of memory
 #define ALIGNSIZE(size) (((size) + 7) & ~7) //macro for aligining size to 8 bytes
 
-static void initializeHeap();
-static void leakDetector();
-static void splitChunk();
 
 /**
  * @struct Metadata struct for memory management
@@ -29,6 +26,28 @@ typedef struct {
 static int heapInitialized = 0; //1 for initialized, 0 for uninitialized
 static char memory[MEMSIZE];
 
+/**
+ * @brief Detects memory leaks by traversing the heap and counting allocated chunks
+ */
+static void leakDetector() {
+    MetaData *current = (MetaData *)memory;
+    int allocatedCount = 0;
+    int totalAllocatedSize = 0;
+
+    //traverse the heap and count allocated chunks and their total size
+    while ((char *)current < memory + MEMSIZE) {
+        if (!current->isFree) {
+            allocatedCount++;
+            totalAllocatedSize += current->chunkLength;
+        }
+        current = (MetaData *)((char *)current + sizeof(MetaData) + current->chunkLength);
+    }
+
+    //print the number of allocated chunks and their total size
+    if (allocatedCount > 0) {
+        fprintf(stderr, "mymalloc: %d bytes leaked in %d objects.\n", totalAllocatedSize, allocatedCount);
+    }
+}
 
 /**
  * @brief initializes the heap
@@ -207,27 +226,4 @@ void myfree(void *ptr, char *file, int line) {
     
     chunkToFree->isFree = 1;
     coalesce(chunkToFree);
-}
-
-/**
- * @brief Detects memory leaks by traversing the heap and counting allocated chunks
- */
-static void leakDetector() {
-    MetaData *current = (MetaData *)memory;
-    int allocatedCount = 0;
-    int totalAllocatedSize = 0;
-
-    //traverse the heap and count allocated chunks and their total size
-    while ((char *)current < memory + MEMSIZE) {
-        if (!current->isFree) {
-            allocatedCount++;
-            totalAllocatedSize += current->chunkLength;
-        }
-        current = (MetaData *)((char *)current + sizeof(MetaData) + current->chunkLength);
-    }
-
-    //print the number of allocated chunks and their total size
-    if (allocatedCount > 0) {
-        fprintf(stderr, "mymalloc: %d bytes leaked in %d objects.\n", totalAllocatedSize, allocatedCount);
-    }
 }
