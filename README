@@ -1,0 +1,24 @@
+Group Members: 
+Aditya Shah, netid: as3975
+Rudra Patel, netid: rp1523
+
+Test Plan:
+
+Test mymalloc and myfree with various test cases (valid and invalid use cases).
+
+Testing:
+    -Allocating entire heap with mymalloc
+    -Allocating multiple chunks of memory and ensuring each mymalloc call returns a valid pointer
+    -Ensuring alignment is correctly taking place when allocating chunk sizes that are non-multiples of 8
+    -Denying requests of allocating invalid sizes of memory (zero or negative size, excessive memory requests)
+    -Coalescing by merging free adjacent chunks to allocate larger chunk sizes
+    -myfree sends error message and terminates program for invalid use cases 
+    (double free, freeing null pointer, freeing invalid pointer, freeing pointer that is not at the beginning of a chunk)
+
+
+Test File: mymalloc_myfree_tests.c
+
+
+    
+
+
