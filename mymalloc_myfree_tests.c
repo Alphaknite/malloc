@@ -21,16 +21,51 @@ void test_allocate_entire_heap() {
     free(ptr);
 }
 
+void test_allocate_multiple_chunks() {
+    void *ptr1 = malloc(4044);
+    void *ptr2 = malloc(6);
+    void *ptr3 = malloc(14);
+    
+    assert(ptr1 != NULL);
+    assert(ptr2 != NULL);
+    assert(ptr3 != NULL);
+    
+    free(ptr1);
+    free(ptr2);
+    free(ptr3);
+    printf("Allocated muliple chunks sucessfully\n");
+}
+
 void test_allocate_too_much_memory() {
     void *ptr = malloc(6000);
     assert(ptr == NULL);
     printf("Successfully rejected excessive memory request\n");
 }
 
+void test_allocate_too_much_memory_2() {
+    void *ptr1 = malloc(4042);
+    void *ptr2 = malloc(20);
+    void *ptr3 = malloc(3);
+    
+    assert(ptr3 == NULL);
+    free(ptr1);
+    free(ptr2);
+    printf("Successfully rejected excessive memory request\n");
+}
+
 void test_allocate_zero_bytes() {
     void *ptr = malloc(0);
+    void *ptr2 = malloc(-6);
+    
     assert(ptr == NULL);
-    printf("Successfully rejected request of zero bytes\n");
+    assert(ptr2 == NULL);
+    printf("Successfully rejected requests of zero or negative number of bytes\n");
+}
+
+void test_myfree() {
+    void *ptr = malloc(780);
+    free(ptr);
+    printf("Succesfully freed\n");
 }
 
 void test_coalesce() {
@@ -50,7 +85,7 @@ void test_coalesce() {
     free(ptr4);
 }
 
-void test_myfree_errors (int case_num) {
+void test_myfree_errors(int case_num) {
     switch (case_num) {
         case 1:
             printf("Test freeing invalid pointer:\n");
@@ -93,11 +128,14 @@ void test_myfree_errors (int case_num) {
 int main() {
     test_allocate_memory();
     test_allocate_entire_heap();
+    test_allocate_multiple_chunks();
     test_allocate_too_much_memory();
+    test_allocate_too_much_memory_2();
     test_allocate_zero_bytes();
+    test_myfree();
     test_coalesce();
-    test_myfree(1);
-    test_myfree(2);
-    test_myfree(3);
-    test_myfree(4);
+    test_myfree_errors(1);
+    test_myfree_errors(2);
+    test_myfree_errors(3);
+    test_myfree_errors(4);
 }
