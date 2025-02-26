@@ -115,7 +115,7 @@ void * mymalloc(size_t size, char *file, int line) {
         return NULL;
     }
 
-    size_t alignedSize = ALIGNSIZE(size); //aligns size to 8 bytes
+    int alignedSize = ALIGNSIZE(size); //aligns size to 8 bytes
 
     //make sure that the total requested size (payload + metadata) fits into our memory
     if (alignedSize + sizeof(MetaData) > MEMSIZE) {
@@ -126,7 +126,7 @@ void * mymalloc(size_t size, char *file, int line) {
     //find a suitable free chunk in the heap that can hold the aligned size.
     MetaData *chunk = findFreeChunk(alignedSize);
     if(chunk == NULL) {
-        fprintf(stderr, "malloc: Unable to allocate %zu bytes (%s:%d)\n", alignedSize, file, line);
+        fprintf(stderr, "malloc: Unable to allocate %d bytes (%s:%d)\n", alignedSize, file, line);
         return NULL;
     }
 
