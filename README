@@ -62,5 +62,18 @@ void test_myfree_errors:
     -Each case should result in a printed error message "Inappropriate pointer"
 
     
+Tests 4 and 5 in memgrind.c
+
+test4:
+    -Created a linked list
+    -Used mymalloc to create new nodes 
+    -Each node is a struct with fields char data and node *next
+    -Created multiple nodes using mymalloc and then freed using myfree
+
+test5:
+    -Created a binary search tree
+    -Used mymalloc to create multiple treenodes and insert them into a binary search tree
+    -Each treenode is a struct with fields char data, TreeNode *left, TreeNode *right
+    -Created a binary search tree and then freed the treenodes
 
 
