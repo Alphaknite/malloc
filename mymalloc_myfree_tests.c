@@ -50,7 +50,7 @@ void test_coalesce() {
     free(ptr4);
 }
 
-void test_myfree (int case_num) {
+void test_myfree_errors (int case_num) {
     switch (case_num) {
         case 1:
             printf("Test freeing invalid pointer:\n");
