@@ -48,8 +48,6 @@ static void initializeHeap() {
     heapInitialized = 1;
     printf("Heap Initialized: First chunk size = %d, Free = %d\n", 
             firstChunk->chunkLength, firstChunk->isFree);
-    
-    //maybe add something for the last block
 }
 
 /**
@@ -141,7 +139,11 @@ void * mymalloc(size_t size, char *file, int line) {
     return (void *)((char *) chunk + sizeof(MetaData));
 }
 
-//Checks if address is at start of a chunk
+/**
+ * @brief checks if the given address is at the start of a chunk
+ * @param chunk the chunk to check
+ * @return 1 if the address is at the start of a chunk, 0 otherwise
+ */
 static int isStart(MetaData *chunk){
     MetaData *curr = (MetaData *)(memory);
     while ((char *)curr < memory + MEMSIZE) {
@@ -153,6 +155,10 @@ static int isStart(MetaData *chunk){
     return 0;
 }
 
+/**
+ * @brief coalesces adjacent free chunks into a single chunk
+ * @param chunk the chunk to coalesce
+ */
 static void coalesce(MetaData *chunk){
     //Check if next chunk is free
     MetaData *after = (MetaData *)((char *)chunk + sizeof(MetaData) + chunk->chunkLength);
@@ -175,6 +181,12 @@ static void coalesce(MetaData *chunk){
     }
 }
 
+/**
+ * @brief Frees a previously allocated block of memory
+ * @param ptr A pointer to the memory block to free
+ * @param file The name of the file where the free request was made from
+ * @param line The line number where the free request was made from
+ */
 void myfree(void *ptr, char *file, int line) {
     if (ptr == NULL) {
         printf("free: Inappropriate pointer(%s:%d)\n", file, line);
@@ -197,7 +209,9 @@ void myfree(void *ptr, char *file, int line) {
     coalesce(chunkToFree);
 }
 
-
+/**
+ * @brief Detects memory leaks by traversing the heap and counting allocated chunks
+ */
 static void leakDetector() {
     MetaData *current = (MetaData *)memory;
     int allocatedCount = 0;

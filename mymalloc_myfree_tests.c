@@ -7,6 +7,9 @@
 #define MEMSIZE 4096
 #define HEADERSIZE 8
 
+/**
+ * @brief Test allocating a block of memory
+ */
 void test_allocate_memory() {
     void *ptr = malloc(300);
     assert(ptr != NULL);
@@ -14,6 +17,9 @@ void test_allocate_memory() {
     free(ptr);
 }
 
+/**
+ * @brief Test allocating the entire heap
+ */
 void test_allocate_entire_heap() {
     void *ptr = malloc(MEMSIZE - HEADERSIZE);
     assert(ptr != NULL);
@@ -21,6 +27,9 @@ void test_allocate_entire_heap() {
     free(ptr);
 }
 
+/**
+ * @brief Test allocating multiple chunks of memory
+ */
 void test_allocate_multiple_chunks() {
     void *ptr1 = malloc(4044);
     void *ptr2 = malloc(6);
@@ -36,12 +45,18 @@ void test_allocate_multiple_chunks() {
     printf("Allocated muliple chunks sucessfully\n");
 }
 
+/**
+ * @brief Test allocating too much memory
+ */
 void test_allocate_too_much_memory() {
     void *ptr = malloc(6000);
     assert(ptr == NULL);
     printf("Successfully rejected excessive memory request\n");
 }
 
+/**
+ * @brief Test allocating too much memory in multiple requests
+ */
 void test_allocate_too_much_memory_2() {
     void *ptr1 = malloc(4042);
     void *ptr2 = malloc(20);
@@ -53,6 +68,9 @@ void test_allocate_too_much_memory_2() {
     printf("Successfully rejected excessive memory request\n");
 }
 
+/**
+ * @brief Test allocating zero or negative bytes
+ */
 void test_allocate_zero_bytes() {
     void *ptr = malloc(0);
     void *ptr2 = malloc(-6);
@@ -62,12 +80,18 @@ void test_allocate_zero_bytes() {
     printf("Successfully rejected requests of zero or negative number of bytes\n");
 }
 
+/**
+ * @brief Test freeing a previously allocated block of memory
+ */
 void test_myfree() {
     void *ptr = malloc(780);
     free(ptr);
     printf("Succesfully freed\n");
 }
 
+/**
+ * @brief Test coalescing adjacent free chunks
+ */
 void test_coalesce() {
     void *ptr1 = malloc(3500);
     void *ptr2 = malloc(174);
@@ -85,6 +109,10 @@ void test_coalesce() {
     free(ptr4);
 }
 
+/**
+ * @brief Test various error cases for freeing memory
+ * @param case_num The case number to test
+ */
 void test_myfree_errors(int case_num) {
     switch (case_num) {
         case 1:

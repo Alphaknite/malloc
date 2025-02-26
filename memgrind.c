@@ -6,6 +6,9 @@
 
 //  Test 1
 //-----------------------------------------------------------------------------
+/**
+ * @brief test allocating and freeing 1 byte of memory 120 times
+ */
 void test1() {
     for(int i = 0; i < 120; i++) {
         char *ptr = malloc(1);
@@ -15,6 +18,9 @@ void test1() {
 
 //  Test 2
 //-----------------------------------------------------------------------------
+/**
+ * @brief test allocating and freeing 1 byte of memory 120 times using an array
+ */
 void test2() {
     char *ptrs[120];
 
@@ -32,6 +38,10 @@ void test2() {
 
 //  Test 3
 //-----------------------------------------------------------------------------
+/**
+ * @brief test allocating and freeing 1 byte of memory 120 times with random 
+ *        allocation and deallocation
+ */
 void test3() {
     char *ptrArray[120];
     int allocated[120] = {0};
@@ -61,6 +71,9 @@ void test3() {
 
 //  Test 4
 //-----------------------------------------------------------------------------
+/**
+ * @brief test allocating and freeing a linked list of 120 nodes
+ */
 typedef struct node {
     char data;
     struct node *next;
@@ -104,12 +117,21 @@ void test4() {
 
 //  Test 5
 //-----------------------------------------------------------------------------
+/**
+ * @brief test allocating and freeing a binary tree of 120 nodes
+ */
 typedef struct TreeNode {
     char data;
     struct TreeNode *left;
     struct TreeNode *right;
 } TreeNode;
 
+/**
+ * @brief Insert a node into the binary tree
+ * @param root The root of the tree
+ * @param data The data to insert
+ * @return The new root of the tree
+ */
 TreeNode* insertNode(TreeNode *root, char data) {
     if(root == NULL) {
         TreeNode *newNode = (TreeNode *)malloc(sizeof(TreeNode));
