@@ -6,6 +6,7 @@ Test Plan:
 
 Test mymalloc and myfree with various test cases (valid and invalid use cases).
 
+
 Testing:
     -Allocating entire heap with mymalloc
     -Allocating multiple chunks of memory and ensuring each mymalloc call returns a valid pointer
@@ -16,8 +17,43 @@ Testing:
     (double free, freeing null pointer, freeing invalid pointer, freeing pointer that is not at the beginning of a chunk)
 
 
+
 Test File: mymalloc_myfree_tests.c
 
+void test_allocate_memory:
+    -Allocate a valid size chunk of memory
+    -Check that the returned pointer is not null
+
+void test_allocate_multiple_chunks:
+    -Allocate three chunks of memory whose sizes are non-multiples of 8
+    -With alignment, header size, payload size all three chunks should be allocated and fit in the heap
+    -Check all three returned pointers are not null
+
+void test_allocate_too_much_memory:
+    -Attempt to allocate one large chunk of memory that is greater than memsize
+    -Check that the returned pointer is null meaning the memory request was denied
+
+void test_allocate_too_much_memory_2:
+    -Attempt to allocate three chunks of memory whose sizes are non-multiples of 8
+    -With alignment, header size, payload size the first two chunks should be allocated and fit in the heap
+    -The third chunk should not be allocated since it is too big for the remaining portion of the heap
+    -Check the returned pointers for the first two chunks are not null
+    -Check the returned pointer for the third chunk is null
+
+void test_allocate_zero_negative_bytes:
+    -Attempt to allocate a chunk of size 0
+    -Attempt to allocate a chunk of negative size
+    -Check both returned pointers are null since requests of zero or negative bytes should not be processed
+
+void test_myfree:
+    -Using myfree to free memory allocated by mymalloc
+    -Should free memory sucessfully
+
+void test_coalesce:
+    -
+
+void test_myfree_errors:
+    -
 
     
 

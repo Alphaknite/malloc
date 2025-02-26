@@ -71,7 +71,7 @@ void test_allocate_too_much_memory_2() {
 /**
  * @brief Test allocating zero or negative bytes
  */
-void test_allocate_zero_bytes() {
+void test_allocate_zero_negative_bytes() {
     void *ptr = malloc(0);
     void *ptr2 = malloc(-6);
     
@@ -159,7 +159,7 @@ int main() {
     test_allocate_multiple_chunks();
     test_allocate_too_much_memory();
     test_allocate_too_much_memory_2();
-    test_allocate_zero_bytes();
+    test_allocate_zero_negative_bytes();
     test_myfree();
     test_coalesce();
     test_myfree_errors(1);
